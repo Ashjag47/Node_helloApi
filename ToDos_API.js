@@ -5,16 +5,18 @@ const port = 3000;
 
 const todos = [
   {
-    id: "1",
+    id: "0",
     name: "node js",
     isCompleted: false
   },
   {
-    id: "2",
+    id: "1",
     name: "Express js",
     isCompleted: false
   }
 ];
+
+const done=[]
 
 const server = http.createServer((req, res) => {
   // To Display all the tasks in to do list
@@ -53,7 +55,7 @@ const server = http.createServer((req, res) => {
   // To Display a particular task in to do list
   else if (/tasks\/[0-9]+$/.test(req.url) && req.method === "GET") {
     res.statusCode = 200;
-    console.log("in tast/id");
+    console.log("in task/id");
     console.log((req.url).replace("/tasks/", ""));
     let id = (req.url).replace("/tasks/", "");
     console.log(typeof (Number(id)));
@@ -75,7 +77,7 @@ const server = http.createServer((req, res) => {
   // To tick as done or undone
   else if (/tasks\/[0-9]+$/.test(req.url) && req.method === "PUT") {
     res.statusCode = 200;
-    console.log("in tast/id");
+    console.log("in task/id");
     console.log((req.url).replace("/tasks/", ""));
     let id = (req.url).replace("/tasks/", "");
     console.log(typeof (Number(id)));
@@ -94,6 +96,32 @@ const server = http.createServer((req, res) => {
       res.end(s);
     }
   }
+
+  // To delete or remove all done tasks
+  else if (req.url=="/tasks/deldone" && req.method==="DELETE"){
+    res.statusCode=200;
+    console.log("in task/deldone")
+    let deIndex=0
+    todos.forEach(todo=> {
+      if (todo.isCompleted){
+        done.push(todo)
+        todos.splice(todo.id,1)
+        deIndex+=1
+      }
+      else{
+        todo.id=String(todo.id-deIndex)
+      }
+    });
+    let s = "";
+    todos.forEach(todo => {
+      s += (todo.name + "|| Is completed: " + todo.isCompleted + "\n");
+    });
+    res.end(s);
+    console.log(todos)
+    console.log(done)
+  }
+
+
 });
 
 server.listen(port, hostname, () => {
