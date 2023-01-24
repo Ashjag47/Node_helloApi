@@ -16,7 +16,7 @@ const todos = [
   }
 ];
 
-const done=[]
+let done=[]
 
 const server = http.createServer((req, res) => {
   // To Display all the tasks in to do list
@@ -119,6 +119,25 @@ const server = http.createServer((req, res) => {
     res.end(s);
     console.log(todos)
     console.log(done)
+  }
+
+  // To display all done tasks and removed done tasks
+  else if (req.url=="/tasks/done" && req.method==="GET"){
+    res.statusCode=200;
+    console.log("in task/done")
+    let s = ""
+    todos.forEach(todo=> {
+      if (todo.isCompleted){
+        s += (todo.name + "  Is completed\n");
+      }
+    });
+    console.log(done.length)
+    done.forEach(did => {
+      s += (did.name + "  Is completed\n");
+    });
+    res.end(s);
+    console.log(todos)
+
   }
 
 
