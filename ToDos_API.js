@@ -59,11 +59,40 @@ const server = http.createServer((req, res) => {
     console.log(typeof (Number(id)));
     id = Number(id);
 
-    let s = "";
-    res.setHeader("Content-Type", "text/html");
-    const status = todos[id].isCompleted ? "completed" : "not completed";
-    s = `The task named ${todos[id].name} is ${status}`;
-    res.end(s);
+    if(id>todos.length-1){
+      res.statusCode = 404;
+      res.end("task not found")
+    }
+    else{
+      let s = "";
+      res.setHeader("Content-Type", "text/html");
+      const status = todos[id].isCompleted ? "completed" : "not completed";
+      s = `The task named ${todos[id].name} is ${status}`;
+      res.end(s);
+    }
+  }
+
+  // To tick as done or undone
+  else if (/tasks\/[0-9]+$/.test(req.url) && req.method === "PUT") {
+    res.statusCode = 200;
+    console.log("in tast/id");
+    console.log((req.url).replace("/tasks/", ""));
+    let id = (req.url).replace("/tasks/", "");
+    console.log(typeof (Number(id)));
+    id = Number(id);
+
+    if(id>todos.length-1){
+      res.statusCode = 404;
+      res.end("task not found")
+    }
+    else{
+      todos[id].isCompleted = !(todos[id].isCompleted)
+      let s = "";
+      todos.forEach(todo => {
+        s += (todo.name + "|| Is completed: " + todo.isCompleted + "\n");
+      });
+      res.end(s);
+    }
   }
 });
 
